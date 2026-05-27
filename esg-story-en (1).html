@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESG for Beginners</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;font-family:'Nunito',sans-serif;overflow:hidden}
+
+  #stage{
+    position:relative;width:100%;height:100vh;min-height:560px;
+    transition:background 1s ease;
+    background:linear-gradient(180deg,#bfe9ff 0%,#e8fbf0 100%);
+  }
+  /* tematske pozadine po sceni */
+  #stage.s0{background:linear-gradient(180deg,#aee9c9 0%,#d8f7e4 100%)}
+  #stage.s1{background:linear-gradient(180deg,#ffd9b0 0%,#ffeede 100%)}
+  #stage.s2{background:linear-gradient(180deg,#c5d3ff 0%,#e6ecff 100%)}
+
+  /* tlo */
+  .ground{position:absolute;bottom:0;left:0;width:100%;height:26%;
+    background:rgba(255,255,255,.45);border-top:4px dashed rgba(0,0,0,.06);
+    transition:background 1s}
+
+  /* dekorativni lebdeći objekti */
+  .floaty{position:absolute;font-size:42px;animation:bob 4s ease-in-out infinite;opacity:.9;filter:drop-shadow(0 6px 8px rgba(0,0,0,.08))}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-18px) rotate(4deg)}}
+
+  /* maskota */
+  .hero{position:absolute;bottom:24%;left:50%;transform:translateX(-50%);
+    width:140px;height:160px;animation:hop 2.2s ease-in-out infinite;z-index:5}
+  @keyframes hop{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-12px)}}
+  .hero svg{width:100%;height:100%;overflow:visible}
+  .blink{animation:blink 4s infinite}
+  @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+
+  /* govorni oblačić */
+  .bubble{position:absolute;left:50%;top:8%;transform:translateX(-50%);
+    background:#fff;border-radius:24px;padding:20px 26px;max-width:560px;width:88%;
+    box-shadow:0 14px 0 rgba(0,0,0,.06),0 18px 40px -10px rgba(0,0,0,.25);
+    text-align:center;z-index:6;animation:pop .5s cubic-bezier(.2,1.3,.4,1) both}
+  .bubble::after{content:'';position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);
+    border:14px solid transparent;border-top-color:#fff;border-bottom:0}
+  @keyframes pop{from{opacity:0;transform:translateX(-50%) translateY(-12px) scale(.9)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+  .tag{display:inline-block;font-family:'Baloo 2',cursive;font-weight:800;font-size:13px;
+    letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;color:#fff;margin-bottom:10px}
+  .bubble h2{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(22px,4vw,30px);
+    line-height:1.1;margin-bottom:8px;color:#243044}
+  .bubble p{font-size:clamp(15px,2.4vw,17px);line-height:1.5;color:#55617a}
+
+  .big-letter{font-family:'Baloo 2',cursive;font-weight:800;font-size:90px;line-height:1;
+    position:absolute;opacity:.16;z-index:1;animation:pop .6s both}
+
+  /* kontrole */
+  .controls{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:14px;z-index:10}
+  .btn{font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;border:none;cursor:pointer;
+    padding:13px 26px;border-radius:100px;color:#fff;transition:transform .2s,box-shadow .2s;
+    box-shadow:0 6px 0 rgba(0,0,0,.18)}
+  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+  .btn.next{background:#ff7a59}
+  .btn.prev{background:#9aa6bd}
+  .btn:disabled{opacity:.4;cursor:default}
+  .dots{display:flex;gap:9px}
+  .dot{width:11px;height:11px;border-radius:50%;background:rgba(0,0,0,.18);transition:all .3s}
+  .dot.on{background:#243044;transform:scale(1.3)}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="stage" class="s_intro">
+  <div class="ground" id="ground"></div>
+  <div id="decor"></div>
+  <span class="big-letter" id="bigLetter" style="display:none"></span>
+
+  <div class="bubble" id="bubble">
+    <span class="tag" id="tag" style="background:#22b573">LET'S START</span>
+    <h2 id="btitle">What is ESG?</h2>
+    <p id="btext">Hi! I'm Pip. I'll walk you through three letters that are reshaping the business world today: E, S and G. Click Next and let's go!</p>
+  </div>
+
+  <div class="hero" id="hero">
+    <svg viewBox="0 0 140 160">
+      <ellipse cx="70" cy="150" rx="42" ry="8" fill="rgba(0,0,0,.10)"/>
+      <!-- tijelo -->
+      <rect x="28" y="46" width="84" height="86" rx="40" fill="#5ec6a8" id="body"/>
+      <!-- trbuh -->
+      <ellipse cx="70" cy="96" rx="28" ry="34" fill="#eafff6"/>
+      <!-- oči -->
+      <g class="blink" style="transform-origin:center">
+        <circle cx="56" cy="80" r="9" fill="#fff"/><circle cx="84" cy="80" r="9" fill="#fff"/>
+        <circle cx="57" cy="82" r="4.5" fill="#243044"/><circle cx="85" cy="82" r="4.5" fill="#243044"/>
+      </g>
+      <!-- obrazi -->
+      <circle cx="44" cy="94" r="6" fill="#ff9db0" opacity=".7"/>
+      <circle cx="96" cy="94" r="6" fill="#ff9db0" opacity=".7"/>
+      <!-- osmijeh -->
+      <path d="M58 100 Q70 110 82 100" stroke="#243044" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <!-- antene -->
+      <line x1="52" y1="46" x2="44" y2="26" stroke="#5ec6a8" stroke-width="4" stroke-linecap="round"/>
+      <line x1="88" y1="46" x2="96" y2="26" stroke="#5ec6a8" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="44" cy="24" r="6" fill="#ffd166"/><circle cx="96" cy="24" r="6" fill="#ffd166"/>
+      <!-- ruke -->
+      <circle cx="24" cy="98" r="9" fill="#5ec6a8" id="armL"/>
+      <circle cx="116" cy="98" r="9" fill="#5ec6a8" id="armR"/>
+    </svg>
+  </div>
+
+  <div class="controls">
+    <button class="btn prev" id="prev" disabled>← Back</button>
+    <div class="dots" id="dots"></div>
+    <button class="btn next" id="next">Next →</button>
+  </div>
+</div>
+
+<script>
+  // Story content: replace the text with your own
+  const scenes = [
+    {
+      cls:"s_intro", tag:"LET'S START", tagColor:"#22b573", color:"#5ec6a8", letter:"",
+      title:"What is ESG?",
+      text:"Hi! I'm Pip. I'll walk you through three letters that are reshaping the business world today: E, S and G. Click Next and let's go!",
+      decor:["☁️|10|14","☁️|72|10","🌍|82|60"]
+    },
+    {
+      cls:"s0", tag:"E for ENVIRONMENT", tagColor:"#22b573", color:"#2e9e6b", letter:"E",
+      title:"E is for Environment",
+      text:"The first letter is about nature: how much energy a company uses, how much waste it creates, and how it cares for the planet. Less pollution and more renewables make a strong E!",
+      decor:["🌳|14|55","🌱|80|62","♻️|76|18","💧|18|20"]
+    },
+    {
+      cls:"s1", tag:"S for SOCIAL", tagColor:"#f5a623", color:"#e8923a", letter:"S",
+      title:"S is for Social",
+      text:"The second letter is about people: employees, customers and the community. Fair working conditions, equality and safety give a company a strong S.",
+      decor:["🤝|16|22","❤️|80|20","👥|78|60","🏫|14|58"]
+    },
+    {
+      cls:"s2", tag:"G for GOVERNANCE", tagColor:"#5b6cff", color:"#4a5bd6", letter:"G",
+      title:"G is for Governance",
+      text:"The third letter is about rules: honest leadership, transparency and responsible decisions. No corruption and clear rules make a healthy G.",
+      decor:["⚖️|16|22","📊|80|20","✅|78|60","🏛️|14|56"]
+    },
+    {
+      cls:"s_intro", tag:"WELL DONE!", tagColor:"#22b573", color:"#5ec6a8", letter:"",
+      title:"E + S + G = ESG",
+      text:"Now you know the basics! ESG measures how responsible a company is toward the environment, people, and the way it is run. That's it. You're ready for the next lesson!",
+      decor:["🎉|14|20","🌟|80|18","🌍|78|58","💚|16|56"]
+    }
+  ];
+
+  let i = 0;
+  const stage=document.getElementById('stage'), bubble=document.getElementById('bubble'),
+    tag=document.getElementById('tag'), btitle=document.getElementById('btitle'),
+    btext=document.getElementById('btext'), decor=document.getElementById('decor'),
+    body=document.getElementById('body'), armL=document.getElementById('armL'),
+    armR=document.getElementById('armR'), bigLetter=document.getElementById('bigLetter'),
+    prev=document.getElementById('prev'), next=document.getElementById('next'),
+    dots=document.getElementById('dots');
+
+  scenes.forEach((_,k)=>{const d=document.createElement('div');d.className='dot'+(k===0?' on':'');dots.appendChild(d)});
+
+  function render(){
+    const s=scenes[i];
+    stage.className=s.cls;
+    tag.textContent=s.tag; tag.style.background=s.tagColor;
+    btitle.textContent=s.title; btext.innerHTML=s.text;
+    body.setAttribute('fill',s.color); armL.setAttribute('fill',s.color); armR.setAttribute('fill',s.color);
+    // restart pop animacije oblačića
+    bubble.style.animation='none'; void bubble.offsetWidth; bubble.style.animation='';
+    // veliko slovo u pozadini
+    if(s.letter){bigLetter.style.display='block';bigLetter.textContent=s.letter;
+      bigLetter.style.color=s.color;bigLetter.style.left='8%';bigLetter.style.top='30%';
+      bigLetter.style.fontSize='220px';bigLetter.style.animation='none';void bigLetter.offsetWidth;bigLetter.style.animation='pop .6s both';
+    } else bigLetter.style.display='none';
+    // dekor
+    decor.innerHTML='';
+    s.decor.forEach((d,n)=>{const[ic,x,y]=d.split('|');const e=document.createElement('span');
+      e.className='floaty';e.textContent=ic;e.style.left=x+'%';e.style.top=y+'%';
+      e.style.animationDelay=(n*.4)+'s';decor.appendChild(e)});
+    // dots & gumbi
+    [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i));
+    prev.disabled=i===0;
+    next.textContent=i===scenes.length-1?'↻ Restart':'Next →';
+  }
+  next.onclick=()=>{i=(i>=scenes.length-1)?0:i+1;render()};
+  prev.onclick=()=>{if(i>0){i--;render()}};
+  render();
+</script>
+</body>
+</html>
